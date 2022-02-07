@@ -1,0 +1,56 @@
+heat_template_version: 'rocky'
+
+parameters:
+
+resources:
+
+  ServerClougConfig:
+    type: OS::Heat::CloudConfig
+    properties:
+      cloud_config:
+        users:
+          - default
+          - name: stack
+            primary_group: stack
+            groups: wheel
+            # password is also stack
+            passwd: $6$VpnieDsSxBslbEGB$KAA22RhRMUAiCA8e1DOkSCf5cbre5GRrCpwvt.nIaelm7zSXPuP1B5x0N5itF4gUZauu.7/1zlA0nWJZMGsXD0
+
+  RHOSReleaseConfig:
+    type: OS::Heat::SoftwareConfig
+    properties:
+      config: |
+        #!/usr/bin/bash
+        sudo dnf localinstall -y http://download.lab.bos.redhat.com/rcm-guest/puddles/OpenStack/rhos-release/rhos-release-latest.noarch.rpm
+        sudo rhos-release 17
+
+        # Hmm..not sure how else to pull this off
+        sudo mkdir -p /home/stack/.ssh
+        sudo chmod 0700 /home/stack/.ssh
+        sudo cp /home/cloud-user/.ssh/authorized_keys /home/stack/.ssh
+        sudo chmod 0600 /home/stack/.ssh/authorized_keys
+        sudo chown -R stack: /home/stack
+
+  SudoConfig:
+    type: OS::Heat::SoftwareConfig
+    properties:
+      config: |
+        #!/usr/bin/bash
+        sudo sed -i "s/# %wheel/%wheel/" /etc/sudoers
+
+  ServerUserData:
+    type: OS::Heat::Value
+    properties:
+      value:
+        - config: {get_resource: ServerClougConfig}
+        - config: {get_resource: RHOSReleaseConfig}
+          subtype: x-shellscript
+        - config: {get_resource: SudoConfig}
+          subtype: x-shellscript
+
+outputs:
+  OS::stack_id:
+    value: {get_resource: ServerUserData}
+  ServerUserData:
+    description: ServerUserData
+    value: {get_attr: [ServerUserData, value]}

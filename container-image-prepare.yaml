@@ -1,0 +1,9 @@
+parameter_defaults:
+  ContainerImagePrepare:
+    - set:
+        namespace: registry-proxy.engineering.redhat.com/rh-osbs
+        name_prefix: rhosp17-openstack-
+        name_sufix: ''
+        # Use tag:latest for latest images instead
+        tag: 17.0_20220124.1
+      tag_from_label: "{version}-{release}"
