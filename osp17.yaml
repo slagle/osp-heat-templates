@@ -130,19 +130,22 @@ resources:
           # See https://bugs.launchpad.net/cloud-init/+bug/1486113
           - path: /home/stack/undercloud.conf
             permissions: '0644'
-            content: {get_file: undercloud.conf}
+            content: {get_file: deploy-templates/undercloud.conf}
           - path: /home/stack/container-image-prepare.yaml
             permissions: '0644'
-            content: {get_file: container-image-prepare.yaml}
+            content: {get_file: deploy-templates/container-image-prepare.yaml}
           - path: /home/stack/vip-data-default.yaml
             permissions: '0644'
-            content: {get_file: vip-data-default.yaml}
+            content: {get_file: deploy-templates/vip-data-default.yaml}
           - path: /home/stack/overcloud-environment.yaml
             permissions: '0644'
-            content: {get_file: overcloud-environment.yaml}
+            content: {get_file: deploy-templates/overcloud-environment.yaml}
+          - path: /home/stack/network-config-update.yaml
+            permissions: '0644'
+            content: {get_file: deploy-templates/network-config-update.yaml}
           - path: /home/stack/net_config_static_bridge.j2
             permissions: '0644'
-            content: {get_file: net_config_static_bridge.j2}
+            content: {get_file: deploy-templates/net_config_static_bridge.j2}
           - path: /home/stack/01-undercloud-install.sh
             permissions: '0755'
             content: {get_file: deploy-scripts/01-undercloud-install.sh}
