@@ -145,22 +145,22 @@ resources:
             content: {get_file: net_config_static_bridge.j2}
           - path: /home/stack/01-undercloud-install.sh
             permissions: '0755'
-            content: {get_file: 01-undercloud-install.sh}
+            content: {get_file: deploy-scripts/01-undercloud-install.sh}
           - path: /home/stack/02-network-provision.sh
             permissions: '0755'
-            content: {get_file: 02-network-provision.sh}
+            content: {get_file: deploy-scripts/02-network-provision.sh}
           - path: /home/stack/03-vip-provision.sh
             permissions: '0755'
-            content: {get_file: 03-vip-provision.sh}
+            content: {get_file: deploy-scripts/03-vip-provision.sh}
           - path: /home/stack/04-node-provision.sh
             permissions: '0755'
-            content: {get_file: 04-node-provision.sh}
+            content: {get_file: deploy-scripts/04-node-provision.sh}
           - path: /home/stack/05-overcloud-deploy.sh
             permissions: '0755'
-            content: {get_file: 05-overcloud-deploy.sh}
+            content: {get_file: deploy-scripts/05-overcloud-deploy.sh}
           - path: /home/stack/deploy.sh
             permissions: '0755'
-            content: {get_file: deploy.sh}
+            content: {get_file: deploy-scripts/deploy.sh}
           - path: /home/stack/overcloud-baremetal-deploy.yaml
             permissions: '0644'
             content:
