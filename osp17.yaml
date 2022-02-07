@@ -35,8 +35,32 @@ parameters:
       Run the full deployment script (/home/stack/deploy.sh) automatically as
       part of cloud-init. Will deploy undercloud and overcloud. Defaults to
       False.
+  PrivateKeyContents:
+    type: string
+    description: |
+      SSH private key absolute file path used to connect to the created
+      servers.  The private key is needed so that the undercloud can SSH to the
+      overcloud nodes. Do not use a key that should be otherwise protected.
+  PublicKey:
+    type: string
+    description: |
+      SSH public key absolute file path used to connect to the created servers.
+  PublicKeyContents:
+    type: string
+    description: |
+      SSH public key contents used to connect to the created servers.
 
 resources:
+
+  KeyPair:
+    type: OS::Nova::KeyPair
+    properties:
+      name:
+        list_join:
+          - '-'
+          - - {get_param: OS::stack_name}
+            - keypair
+      public_key: {get_param: PublicKeyContents}
 
   CtlplaneNetwork:
     type: OS::Neutron::Net
@@ -100,7 +124,7 @@ resources:
     type: OS::Nova::Server
     properties:
       flavor: {get_param: DirectorFlavor}
-      key_name: {get_param: KeyName}
+      key_name: {get_resource: KeyPair}
       name: osp17-director
       image: {get_param: RHELImage}
       networks:
@@ -171,6 +195,12 @@ resources:
                 template: "value"
                 params:
                   value: {get_attr: [BaremetalDeployInput, value]}
+          - path: /home/stack/.ssh/id_rsa
+            permissions: '0600'
+            content: {get_param: PrivateKeyContents}
+          - path: /home/stack/.ssh/id_rsa.pub
+            permissions: '0600'
+            content: {get_param: PublicKeyContents}
 
   DirectorRunFullDeploy:
     type: OS::Heat::SoftwareConfig
@@ -272,7 +302,7 @@ resources:
         type: overcloud-server.yaml
         properties:
           flavor: {get_param: ControllerFlavor}
-          key_name: {get_param: KeyName}
+          key_name: {get_resource: KeyPair}
           name:
             list_join:
               - '-'
@@ -294,7 +324,7 @@ resources:
         type: overcloud-server.yaml
         properties:
           flavor: {get_param: ComputeFlavor}
-          key_name: {get_param: KeyName}
+          key_name: {get_resource: KeyPair}
           name:
             list_join:
               - '-'
