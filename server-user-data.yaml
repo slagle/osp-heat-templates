@@ -24,6 +24,8 @@ resources:
         sudo dnf localinstall -y http://download.lab.bos.redhat.com/rcm-guest/puddles/OpenStack/rhos-release/rhos-release-latest.noarch.rpm
         sudo rhos-release 17
 
+        sudo dnf -y install tmux
+
         # Hmm..not sure how else to pull this off
         sudo mkdir -p /home/stack/.ssh
         sudo chmod 0700 /home/stack/.ssh
