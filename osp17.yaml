@@ -319,6 +319,9 @@ resources:
 
   Controllers:
     type: OS::Heat::ResourceGroup
+    depends_on:
+      - CtlplaneSubnet
+      - ManagementSubnet
     properties:
       count: {get_param: ControllerCount}
       resource_def:
@@ -341,6 +344,9 @@ resources:
 
   Computes:
     type: OS::Heat::ResourceGroup
+    depends_on:
+      - CtlplaneSubnet
+      - ManagementSubnet
     properties:
       count: {get_param: ComputeCount}
       resource_def:
