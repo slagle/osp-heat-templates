@@ -211,9 +211,9 @@ resources:
           - path: /home/stack/.tmux.conf
             permissions: '0644'
             content: {get_file: deploy-files/tmux.conf}
-          - path: /root/cloud-init-timedatectl.pp
+          - path: /root/cloud-init-timedatectl.avc
             permissions: '0644'
-            content: {get_file: deploy-files/cloud-init-timedatectl.pp}
+            content: {get_file: deploy-files/cloud-init-timedatectl.avc}
 
   DirectorRunFullDeploy:
     type: OS::Heat::SoftwareConfig
@@ -223,7 +223,10 @@ resources:
           - {get_param: RunFullDeploy}
           - |
             #!/bin/bash
-            semanage -i /root/cloud-init-timedatectl.pp
+            pushd /root
+            audit2allow -M cloud-init-timedatectl < cloud-init-timedatectl.avc
+            semodule -i cloud-init-timedatectl.pp
+            popd
             sudo -iu stack bash<<EOF
             tmux new-session -d -s undercloud
             tmux send-keys -t undercloud:0 "export SUDO_USER=stack"
