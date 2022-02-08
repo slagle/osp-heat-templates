@@ -21,17 +21,17 @@ resources:
     properties:
       config: |
         #!/usr/bin/bash
-        sudo dnf localinstall -y http://download.lab.bos.redhat.com/rcm-guest/puddles/OpenStack/rhos-release/rhos-release-latest.noarch.rpm
-        sudo rhos-release 17
+        dnf localinstall -y http://download.lab.bos.redhat.com/rcm-guest/puddles/OpenStack/rhos-release/rhos-release-latest.noarch.rpm
+        rhos-release 17
 
-        sudo dnf -y install tmux
+        dnf -y install tmux
 
         # Hmm..not sure how else to pull this off
-        sudo mkdir -p /home/stack/.ssh
-        sudo chmod 0700 /home/stack/.ssh
-        sudo cp /home/cloud-user/.ssh/authorized_keys /home/stack/.ssh
-        sudo chmod 0600 /home/stack/.ssh/authorized_keys
-        sudo chown -R stack: /home/stack
+        mkdir -p /home/stack/.ssh
+        chmod 0700 /home/stack/.ssh
+        cp /home/cloud-user/.ssh/authorized_keys /home/stack/.ssh
+        chmod 0600 /home/stack/.ssh/authorized_keys
+        chown -R stack: /home/stack
 
   SudoConfig:
     type: OS::Heat::SoftwareConfig
