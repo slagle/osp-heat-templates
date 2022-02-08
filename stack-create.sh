@@ -18,5 +18,6 @@ openstack stack create ${STACK_NAME} -t ${SCRIPT_DIR}/osp17.yaml --wait \
 
 IP=$(openstack stack output show ${STACK_NAME} DirectorFloatingIP -c output_value -f value)
 ssh-keygen -R $IP
+set +x
 echo "Connect with SSH as:"
-echo "ssh -i ${SSH_KEY} ${IP}"
+echo "ssh -i ${SSH_KEY} stack@${IP}"
