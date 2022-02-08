@@ -201,6 +201,12 @@ resources:
           - path: /home/stack/.ssh/id_rsa.pub
             permissions: '0600'
             content: {get_param: PublicKeyContents}
+          - path: /home/stack/.tmux.conf
+            permissions: '0644'
+            content: {get_file: deploy-files/tmux.conf}
+          - path: /root/cloud-init-timedatectl.pp
+            permissions: '0644'
+            content: {get_file: deploy-files/cloud-init-timedatectl.pp}
 
   DirectorRunFullDeploy:
     type: OS::Heat::SoftwareConfig
@@ -210,7 +216,14 @@ resources:
           - {get_param: RunFullDeploy}
           - |
             #!/bin/bash
-            sudo -iu stack /bin/bash -c "SUDO_USER='stack' /home/stack/deploy.sh"
+            semanage -i /root/cloud-init-timedatectl.pp
+            sudo -iu stack bash<<EOF
+            tmux new-session -d -s undercloud
+            tmux send-keys -t undercloud:0 "export SUDO_USER=stack"
+            tmux send-keys -t undercloud:0 Enter
+            tmux send-keys -t undercloud:0 /home/stack/deploy.sh
+            tmux send-keys -t undercloud:0 Enter
+            EOF
           - |
             #!/bin/bash
             true
