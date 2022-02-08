@@ -9,6 +9,7 @@ date
 source stackrc
 
 time openstack overcloud deploy \
+  --overcloud-ssh-user stack \
   --stack overcloud \
   --templates /usr/share/openstack-tripleo-heat-templates \
   --networks-file /usr/share/openstack-tripleo-heat-templates/network_data_default.yaml \
