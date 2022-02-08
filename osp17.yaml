@@ -4,6 +4,9 @@ parameters:
   RHELImage:
     type: string
     default: RHEL-8.4.0-x86_64-latest
+  DirectorImage:
+    type: string
+    default: jslagle-director-8.4
   DirectorUsername:
     type: string
     default: stack
@@ -126,7 +129,7 @@ resources:
       flavor: {get_param: DirectorFlavor}
       key_name: {get_resource: KeyPair}
       name: osp17-director
-      image: {get_param: RHELImage}
+      image: {get_param: DirectorImage}
       networks:
         - port: {get_resource: ManagementPort}
         - port: {get_resource: CtlplanePort}
@@ -141,7 +144,11 @@ resources:
     properties:
       config: |
         #!/usr/bin/bash
-        sudo dnf -y install python3-tripleoclient
+        if rpm -q python3-tripleoclient; then
+          sudo dnf -y update python3-tripleoclient
+        else
+          sudo dnf -y install python3-tripleoclient
+        fi
         # Needed so the undercloud install doesn't fail fqdn validation
         sudo hostnamectl set-hostname osp17-director.localdomain
 
