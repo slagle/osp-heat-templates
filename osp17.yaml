@@ -31,13 +31,6 @@ parameters:
   FloatingNetwork:
     type: string
     default: provider_net_sysops
-  RunFullDeploy:
-    type: boolean
-    default: false
-    description: |
-      Run the full deployment script (/home/stack/deploy.sh) automatically as
-      part of cloud-init. Will deploy undercloud and overcloud. Defaults to
-      False.
   PrivateKeyContents:
     type: string
     description: |
@@ -215,29 +208,6 @@ resources:
             permissions: '0644'
             content: {get_file: deploy-files/cloud-init-timedatectl.avc}
 
-  DirectorRunFullDeploy:
-    type: OS::Heat::SoftwareConfig
-    properties:
-      config:
-        if:
-          - {get_param: RunFullDeploy}
-          - |
-            #!/bin/bash
-            pushd /root
-            audit2allow -M cloud-init-timedatectl < cloud-init-timedatectl.avc
-            semodule -i cloud-init-timedatectl.pp
-            popd
-            sudo -iu stack bash<<EOF
-            tmux new-session -d -s undercloud
-            tmux send-keys -t undercloud:0 "export SUDO_USER=stack"
-            tmux send-keys -t undercloud:0 Enter
-            tmux send-keys -t undercloud:0 /home/stack/deploy.sh
-            tmux send-keys -t undercloud:0 Enter
-            EOF
-          - |
-            #!/bin/bash
-            true
-
   DirectorUserData:
     type: OS::Heat::MultipartMime
     properties:
@@ -247,8 +217,6 @@ resources:
           - - config: {get_resource: DirectorTripleOClientConfig}
               subtype: x-shellscript
             - config: {get_resource: DirectorUndercloudConfig}
-            - config: {get_resource: DirectorRunFullDeploy}
-              subtype: x-shellscript
 
   BaremetalDeployInput:
     type: OS::Heat::Value
