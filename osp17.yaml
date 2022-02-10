@@ -6,7 +6,7 @@ parameters:
     default: RHEL-8.4.0-x86_64-latest
   DirectorImage:
     type: string
-    default: jslagle-director-8.4
+    default: RHEL-8.4.0-x86_64-latest
   DirectorUsername:
     type: string
     default: stack
