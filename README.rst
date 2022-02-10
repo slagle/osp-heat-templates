@@ -45,3 +45,18 @@ Or, executed all at once:
 Everything is preconfigured, and the environment should come up with any
 additional customization. Or, customize the provided scripts and environments
 to tailor the environment to specific needs.
+
+Further Examples
+________________
+
+Deploy additional Compute nodes:
+
+::
+
+  ./stack-create.sh --parameter ComputeCount=10
+
+Use a different stack name (default is osp17):
+
+::
+
+  STACK_NAME=custom-stack ./stack-create.sh
