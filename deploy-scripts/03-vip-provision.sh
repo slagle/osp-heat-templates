@@ -16,7 +16,7 @@ source stackrc
 time openstack overcloud network vip provision \
   -o overcloud-vip-deployed${CLOUD_SUFFIX}.yaml \
   --stack ${STACK_NAME} \
-  /home/stack/vip-data-default${CLOUD_SUFFIX}.yaml \
+  /home/stack/vip-data-default.yaml \
   $@
 
 date
