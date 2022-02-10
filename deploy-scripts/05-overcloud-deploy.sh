@@ -15,7 +15,7 @@ time openstack overcloud deploy \
   --overcloud-ssh-user stack \
   --stack ${STACK_NAME} \
   --templates /usr/share/openstack-tripleo-heat-templates \
-  --networks-file /usr/share/openstack-tripleo-heat-templates/network_data_default.yaml \
+  --networks-file /home/stack/default-network-isolation.yaml \
   --roles-file /usr/share/openstack-tripleo-heat-templates/roles_data.yaml \
   -e /home/stack/overcloud-network-deployed${CLOUD_SUFFIX}.yaml \
   -e /home/stack/overcloud-vip-deployed${CLOUD_SUFFIX}.yaml \

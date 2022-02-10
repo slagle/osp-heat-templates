@@ -1,7 +1,7 @@
 parameter_defaults:
   NeutronPublicInterface: nic2
-  ControllerNetworkConfigTemplate: /home/stack/net_config_static_bridge.j2
-  ComputeNetworkConfigTemplate: /home/stack/net_config_static_bridge.j2
+  ControllerNetworkConfigTemplate: /home/stack/net_config_multiple_nics.j2
+  ComputeNetworkConfigTemplate: /home/stack/net_config_multiple_nics.j2
   NtpServer:
     - clock.redhat.com
     - clock2.redhat.com

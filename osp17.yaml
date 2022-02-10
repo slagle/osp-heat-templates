@@ -58,14 +58,14 @@ resources:
             - keypair
       public_key: {get_param: PublicKeyContents}
 
-  CtlplaneNetwork:
+  DeployNetwork:
     type: OS::Neutron::Net
     properties:
       name:
         list_join:
           - '-'
           - - {get_param: OS::stack_name}
-            - ctlplane
+            - deploy
       port_security_enabled: false
 
   ManagementNetwork:
@@ -78,14 +78,69 @@ resources:
             - management
       port_security_enabled: false
 
-  CtlplaneSubnet:
+  DeploySubnet:
     type: OS::Neutron::Subnet
     properties:
-      network: {get_resource: CtlplaneNetwork}
+      network: {get_resource: DeployNetwork}
       allocation_pools:
         - start: 192.168.24.1
           end: 192.168.24.200
       cidr: 192.168.24.0/24
+      enable_dhcp: false
+      gateway_ip: null
+
+  DeployStorageSubnet:
+    type: OS::Neutron::Subnet
+    properties:
+      network: {get_resource: DeployNetwork}
+      allocation_pools:
+        - start: 172.16.1.1
+          end: 172.16.1.200
+      cidr: 172.16.1.0/24
+      enable_dhcp: false
+      gateway_ip: null
+
+  DeployStorageMgmtSubnet:
+    type: OS::Neutron::Subnet
+    properties:
+      network: {get_resource: DeployNetwork}
+      allocation_pools:
+        - start: 172.16.3.1
+          end: 172.16.3.200
+      cidr: 172.16.3.0/24
+      enable_dhcp: false
+      gateway_ip: null
+
+  DeployInternalApiSubnet:
+    type: OS::Neutron::Subnet
+    properties:
+      network: {get_resource: DeployNetwork}
+      allocation_pools:
+        - start: 172.16.2.1
+          end: 172.16.2.200
+      cidr: 172.16.2.0/24
+      enable_dhcp: false
+      gateway_ip: null
+
+  DeployTenantSubnet:
+    type: OS::Neutron::Subnet
+    properties:
+      network: {get_resource: DeployNetwork}
+      allocation_pools:
+        - start: 172.16.0.1
+          end: 172.16.0.200
+      cidr: 172.16.0.0/24
+      enable_dhcp: false
+      gateway_ip: null
+
+  DeployExternalSubnet:
+    type: OS::Neutron::Subnet
+    properties:
+      network: {get_resource: DeployNetwork}
+      allocation_pools:
+        - start: 10.0.0.2
+          end: 10.0.0.200
+      cidr: 10.0.0.0/24
       enable_dhcp: false
       gateway_ip: null
 
@@ -125,7 +180,8 @@ resources:
       image: {get_param: DirectorImage}
       networks:
         - port: {get_resource: ManagementPort}
-        - port: {get_resource: CtlplanePort}
+        - port: {get_resource: DeployPort}
+        - port: {get_resource: ExternalPort}
       user_data: {get_resource: DirectorUserData}
       user_data_format: RAW
 
@@ -155,6 +211,9 @@ resources:
           - path: /home/stack/undercloud.conf
             permissions: '0644'
             content: {get_file: deploy-templates/undercloud.conf}
+          - path: /home/stack/undercloud-environment.yaml
+            permissions: '0644'
+            content: {get_file: deploy-templates/undercloud-environment.yaml}
           - path: /home/stack/container-image-prepare.yaml
             permissions: '0644'
             content: {get_file: deploy-templates/container-image-prepare.yaml}
@@ -170,6 +229,15 @@ resources:
           - path: /home/stack/net_config_static_bridge.j2
             permissions: '0644'
             content: {get_file: deploy-templates/net_config_static_bridge.j2}
+          - path: /home/stack/net_config_multiple_nics.j2
+            permissions: '0644'
+            content: {get_file: deploy-templates/net_config_multiple_nics.j2}
+          - path: /home/stack/vip-data-network-isolation.yaml
+            permissions: '0644'
+            content: {get_file: deploy-templates/vip-data-network-isolation.yaml}
+          - path: /home/stack/default-network-isolation.yaml
+            permissions: '0644'
+            content: {get_file: deploy-templates/default-network-isolation.yaml}
           - path: /home/stack/01-undercloud-install.sh
             permissions: '0755'
             content: {get_file: deploy-scripts/01-undercloud-install.sh}
@@ -228,8 +296,13 @@ resources:
             managed: false
             networks:
               - network: ctlplane
+              - network: storage
+              - network: storage_mgmt
+              - network: internal_api
+              - network: tenant
+              - network: external
             network_config:
-              template: /usr/share/ansible/roles/tripleo_network_config/templates/net_config_static_bridge.j2
+              template: /usr/share/ansible/roles/tripleo_network_config/templates/net_config_multiple_nics.j2
           instances: {get_attr: [Controllers, BaremetalDeployInput]}
         - name: Compute
           count: {get_param: ComputeCount}
@@ -237,8 +310,13 @@ resources:
             managed: false
             networks:
               - network: ctlplane
+              - network: storage
+              - network: storage_mgmt
+              - network: internal_api
+              - network: tenant
+              - network: external
             network_config:
-              template: /usr/share/ansible/roles/tripleo_network_config/templates/net_config_static_bridge.j2
+              template: /usr/share/ansible/roles/tripleo_network_config/templates/net_config_multiple_nics.j2
           instances: {get_attr: [Computes, BaremetalDeployInput]}
 
   ManagementPort:
@@ -247,31 +325,43 @@ resources:
       network: {get_resource: ManagementNetwork}
       fixed_ips:
         - ip_address: 10.98.0.5
+          subnet: {get_resource: ManagementSubnet}
 
-  CtlplanePort:
+  DeployPort:
     type: OS::Neutron::Port
     properties:
-      network: {get_resource: CtlplaneNetwork}
+      network: {get_resource: DeployNetwork}
       fixed_ips:
         - ip_address: 192.168.24.1
+          subnet: {get_resource: DeploySubnet}
+
+  ExternalPort:
+    type: OS::Neutron::Port
+    properties:
+      network: {get_resource: DeployNetwork}
+      fixed_ips:
+        - ip_address: 10.0.0.5
+          subnet: {get_resource: DeployExternalSubnet}
 
   # Not actually associated with the Director server, resource is just here to
   # reserve the IP so the undercloud install can use it.
   DirectorAdminVip:
     type: OS::Neutron::Port
     properties:
-      network: {get_resource: CtlplaneNetwork}
+      network: {get_resource: DeployNetwork}
       fixed_ips:
         - ip_address: 192.168.24.3
+          subnet: {get_resource: DeploySubnet}
 
   # Not actually associated with the Director server, resource is just here to
   # reserve the IP so the undercloud install can use it.
   DirectorPublicVip:
     type: OS::Neutron::Port
     properties:
-      network: {get_resource: CtlplaneNetwork}
+      network: {get_resource: DeployNetwork}
       fixed_ips:
         - ip_address: 192.168.24.2
+          subnet: {get_resource: DeploySubnet}
 
   DirectorFloatingIP:
     type: OS::Neutron::FloatingIP
@@ -288,7 +378,7 @@ resources:
   Controllers:
     type: OS::Heat::ResourceGroup
     depends_on:
-      - CtlplaneSubnet
+      - DeploySubnet
       - ManagementSubnet
     properties:
       count: {get_param: ControllerCount}
@@ -308,12 +398,12 @@ resources:
             %index%
           SubnetStart: 10
           ManagementNetwork: {get_resource: ManagementNetwork}
-          CtlplaneNetwork: {get_resource: CtlplaneNetwork}
+          DeployNetwork: {get_resource: DeployNetwork}
 
   Computes:
     type: OS::Heat::ResourceGroup
     depends_on:
-      - CtlplaneSubnet
+      - DeploySubnet
       - ManagementSubnet
     properties:
       count: {get_param: ComputeCount}
@@ -333,7 +423,7 @@ resources:
             %index%
           SubnetStart: 100
           ManagementNetwork: {get_resource: ManagementNetwork}
-          CtlplaneNetwork: {get_resource: CtlplaneNetwork}
+          DeployNetwork: {get_resource: DeployNetwork}
 
 outputs:
   DirectorFloatingIP:

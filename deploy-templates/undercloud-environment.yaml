@@ -1,0 +1,20 @@
+parameter_defaults:
+  ExtraFirewallRules:
+    '001 masquerade ctlplane traffic':
+        ipversion: 'ipv4'
+        proto:     'all'
+        table:     'nat'
+        chain:     'POSTROUTING'
+        jump:      'MASQUERADE'
+        action:    'append'
+        source:    '192.168.24.0/24'
+        dest:      '!192.168.24.0/24'
+    '001 masquerade external traffic':
+        ipversion: 'ipv4'
+        proto:     'all'
+        table:     'nat'
+        chain:     'POSTROUTING'
+        jump:      'MASQUERADE'
+        action:    'append'
+        source:    '10.0.0.0/24'
+        dest:      '!10.0.0.0/24'
