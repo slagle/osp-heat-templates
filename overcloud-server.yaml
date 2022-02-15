@@ -15,7 +15,7 @@ parameters:
     type: number
   ManagementNetwork:
     type: string
-  CtlplaneNetwork:
+  DeployNetwork:
     type: string
 
 resources:
@@ -30,8 +30,18 @@ resources:
       networks:
         - network: {get_param: ManagementNetwork}
           fixed_ip: {get_attr: [ManagementIP, value]}
-        - network: {get_param: CtlplaneNetwork}
+        - network: {get_param: DeployNetwork}
           fixed_ip: {get_attr: [CtlplaneIP, value]}
+        - network: {get_param: DeployNetwork}
+          fixed_ip: {get_attr: [StorageIP, value]}
+        - network: {get_param: DeployNetwork}
+          fixed_ip: {get_attr: [StorageMgmtIP, value]}
+        - network: {get_param: DeployNetwork}
+          fixed_ip: {get_attr: [InternalApiIP, value]}
+        - network: {get_param: DeployNetwork}
+          fixed_ip: {get_attr: [TenantIP, value]}
+        - network: {get_param: DeployNetwork}
+          fixed_ip: {get_attr: [ExternalIP, value]}
       user_data: {get_resource: OvercloudUserData}
       user_data_format: SOFTWARE_CONFIG
 
@@ -55,6 +65,76 @@ resources:
       value:
         str_replace:
           template: 192.168.24.<%ip%>
+          params:
+            <%ip%>:
+              yaql:
+                expression: $.data.ip_base + $.data.index
+                data:
+                  ip_base: {get_param: SubnetStart}
+                  index: {get_param: index}
+
+  StorageIP:
+    type: OS::Heat::Value
+    properties:
+      value:
+        str_replace:
+          template: 172.16.1.<%ip%>
+          params:
+            <%ip%>:
+              yaql:
+                expression: $.data.ip_base + $.data.index
+                data:
+                  ip_base: {get_param: SubnetStart}
+                  index: {get_param: index}
+
+  StorageMgmtIP:
+    type: OS::Heat::Value
+    properties:
+      value:
+        str_replace:
+          template: 172.16.3.<%ip%>
+          params:
+            <%ip%>:
+              yaql:
+                expression: $.data.ip_base + $.data.index
+                data:
+                  ip_base: {get_param: SubnetStart}
+                  index: {get_param: index}
+
+  InternalApiIP:
+    type: OS::Heat::Value
+    properties:
+      value:
+        str_replace:
+          template: 172.16.2.<%ip%>
+          params:
+            <%ip%>:
+              yaql:
+                expression: $.data.ip_base + $.data.index
+                data:
+                  ip_base: {get_param: SubnetStart}
+                  index: {get_param: index}
+
+  TenantIP:
+    type: OS::Heat::Value
+    properties:
+      value:
+        str_replace:
+          template: 172.16.0.<%ip%>
+          params:
+            <%ip%>:
+              yaql:
+                expression: $.data.ip_base + $.data.index
+                data:
+                  ip_base: {get_param: SubnetStart}
+                  index: {get_param: index}
+
+  ExternalIP:
+    type: OS::Heat::Value
+    properties:
+      value:
+        str_replace:
+          template: 10.0.0.<%ip%>
           params:
             <%ip%>:
               yaql:
@@ -97,3 +177,13 @@ outputs:
       networks:
         - network: ctlplane
           fixed_ip: {get_attr: [CtlplaneIP, value]}
+        - network: storage
+          fixed_ip: {get_attr: [StorageIP, value]}
+        - network: storage_mgmt
+          fixed_ip: {get_attr: [StorageMgmtIP, value]}
+        - network: internal_api
+          fixed_ip: {get_attr: [InternalApiIP, value]}
+        - network: tenant
+          fixed_ip: {get_attr: [TenantIP, value]}
+        - network: external
+          fixed_ip: {get_attr: [ExternalIP, value]}
