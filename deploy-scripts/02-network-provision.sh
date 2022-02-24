@@ -7,12 +7,11 @@ set -eux
 date
 
 STACK_NAME=${STACK_NAME:-"overcloud"}
-CLOUD_SUFFIX=${CLOUD_SUFFIX:-""}
 
 source stackrc
 
 time openstack overcloud network provision \
-  -o overcloud-network-deployed${CLOUD_SUFFIX}.yaml \
+  -o overcloud-network-deployed-${STACK_NAME}.yaml \
   --stack ${STACK_NAME} \
   /home/stack/default-network-isolation.yaml \
   $@

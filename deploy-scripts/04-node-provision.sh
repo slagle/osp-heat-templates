@@ -7,14 +7,14 @@ set -eux
 date
 
 STACK_NAME=${STACK_NAME:-"overcloud"}
-CLOUD_SUFFIX=${CLOUD_SUFFIX:-""}
 
 source stackrc
 
 time openstack overcloud node provision \
   --stack ${STACK_NAME} \
   --overcloud-ssh-user stack \
-  --output /home/stack/overcloud-baremetal-deployed${CLOUD_SUFFIX}.yaml \
-  /home/stack/overcloud-baremetal-deploy.yaml
+  --output /home/stack/overcloud-baremetal-deployed-${STACK_NAME}.yaml \
+  /home/stack/overcloud-baremetal-deploy-${STACK_NAME}.yaml \
+  $@
 
 date
