@@ -7,12 +7,10 @@ STACK_NAME=${STACK_NAME:-"osp17"}
 SCRIPT_DIR=$(realpath $(dirname $0))
 SSH_KEY=${SSH_KEY:-"$HOME/.ssh/${STACK_NAME}"}
 
-if [ -z $ENVIRONMENT_NAME ]; then
+if [ -z "$ENVIRONMENT_NAME" ]; then
     echo "Must provide environment file as first positional argument"
     echo "(e.g., master.yaml, osp17.yaml)"
     exit 1
-else
-    shift
 fi
 
 if [ ! -f ${SSH_KEY} ]; then
