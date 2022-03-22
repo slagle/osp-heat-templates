@@ -2,7 +2,7 @@
 
 set -eux
 
-ENVIRONMENT_NAME=${1:-""}
+ENVIRONMENT_NAME=${1:-"osp17.yaml"}
 STACK_NAME=${STACK_NAME:-"osp17"}
 SCRIPT_DIR=$(realpath $(dirname $0))
 SSH_KEY=${SSH_KEY:-"$HOME/.ssh/${STACK_NAME}"}
