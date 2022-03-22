@@ -14,7 +14,7 @@ time openstack overcloud node provision \
   --stack ${STACK_NAME} \
   --overcloud-ssh-user stack \
   --output /home/stack/overcloud-baremetal-deployed-${STACK_NAME}.yaml \
-  /home/stack/overcloud-baremetal-deploy-${STACK_NAME}.yaml \
+  /home/stack/overcloud-baremetal-deploy.yaml \
   $@
 
 date

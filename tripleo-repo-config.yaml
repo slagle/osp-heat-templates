@@ -1,0 +1,28 @@
+heat_template_version: 'rocky'
+
+parameters:
+
+resources:
+
+  TripleOReleaseConfig:
+    type: OS::Heat::SoftwareConfig
+    properties:
+      config: |
+        #!/usr/bin/bash
+        rpm -q git || sudo dnf -y install git
+        sudo dnf -y install python3 python3-setuptools python3-requests
+        git clone https://git.openstack.org/openstack/tripleo-repos
+        pushd tripleo-repos
+        sudo python3 setup.py install
+        popd
+
+        if ! grep -q -i stream /etc/os-release; then
+            NO_STREAM="--no-stream"
+        else
+            NO_STREAM=""
+        fi
+        sudo /usr/local/bin/tripleo-repos current-tripleo-dev $NO_STREAM
+
+outputs:
+  OS::stack_id:
+    value: {get_resource: TripleOReleaseConfig}

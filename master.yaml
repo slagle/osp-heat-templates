@@ -1,0 +1,8 @@
+parameter_defaults:
+  UndercloudImage: jslagle-centos-stream
+  OvercloudImage: jslagle-centos-stream
+  ComputeFlavor: ci.disk.small
+  CloudUser: centos
+
+resource_registry:
+  OS::OSPHeatTemplates::RepoConfig: tripleo-repo-config.yaml
