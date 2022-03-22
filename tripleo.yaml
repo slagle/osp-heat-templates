@@ -310,7 +310,7 @@ resources:
               - network: tenant
               - network: external
             network_config:
-              template: /usr/share/ansible/roles/tripleo_network_config/templates/net_config_multiple_nics.j2
+              template: /home/stack/net_config_multiple_nics.j2
           instances: {get_attr: [Controllers, BaremetalDeployInput]}
         - name: Compute
           count: {get_param: ComputeCount}
@@ -324,7 +324,7 @@ resources:
               - network: tenant
               - network: external
             network_config:
-              template: /usr/share/ansible/roles/tripleo_network_config/templates/net_config_multiple_nics.j2
+              template: /home/stack/net_config_multiple_nics.j2
           instances: {get_attr: [Computes, BaremetalDeployInput]}
 
   ManagementPort:
