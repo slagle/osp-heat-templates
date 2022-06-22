@@ -1,6 +1,6 @@
 parameter_defaults:
-  UndercloudImage: jslagle-centos-stream
-  OvercloudImage: jslagle-centos-stream
+  UndercloudImage: jslagle-centos-stream-9
+  OvercloudImage: jslagle-centos-stream-9
   ComputeFlavor: ci.disk.small
   CloudUser: centos
 
