@@ -1,6 +1,6 @@
 parameter_defaults:
-  UndercloudImage: RHEL-8.4.0-x86_64-latest
-  OvercloudImage: RHEL-8.4.0-x86_64-latest
+  UndercloudImage: RHEL-9.0.0-x86_64-development-latest
+  OvercloudImage: RHEL-9.0.0-x86_64-development-latest
   ComputeFlavor: m1.small
   CloudUser: cloud-user
 
