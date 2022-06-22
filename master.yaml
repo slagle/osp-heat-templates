@@ -1,7 +1,7 @@
 parameter_defaults:
   UndercloudImage: jslagle-centos-stream-9-tripleoclient
   OvercloudImage: jslagle-centos-stream-9
-  ComputeFlavor: ci.disk.small
+  ComputeFlavor: ci.disk.medium
   CloudUser: centos
   ContainerImagePrepareFile: deploy-templates/container-image-prepare-master.yaml
 

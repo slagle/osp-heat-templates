@@ -227,7 +227,7 @@ resources:
             content: {get_file: deploy-templates/undercloud-environment.yaml}
           - path: /home/stack/container-image-prepare.yaml
             permissions: '0644'
-            content: {get_param: ContainerImagePrepareFile}
+            content: {get_file: {get_param: ContainerImagePrepareFile}}
           - path: /home/stack/vip-data-default.yaml
             permissions: '0644'
             content: {get_file: deploy-templates/vip-data-default.yaml}
