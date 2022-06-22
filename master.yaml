@@ -3,6 +3,7 @@ parameter_defaults:
   OvercloudImage: jslagle-centos-stream-9
   ComputeFlavor: ci.disk.small
   CloudUser: centos
+  ContainerImagePrepareFile: deploy-templates/container-image-prepare-master.yaml
 
 resource_registry:
   OS::OSPHeatTemplates::RepoConfig: tripleo-repo-config.yaml

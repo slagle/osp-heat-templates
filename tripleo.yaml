@@ -45,6 +45,9 @@ parameters:
     type: string
     description: |
       SSH public key contents used to connect to the created servers.
+  ContainerImagePrepareFile:
+    type: string
+    default: deploy-templates/container-image-prepare-osp17.yaml
 
 resources:
 
@@ -224,7 +227,7 @@ resources:
             content: {get_file: deploy-templates/undercloud-environment.yaml}
           - path: /home/stack/container-image-prepare.yaml
             permissions: '0644'
-            content: {get_file: deploy-templates/container-image-prepare.yaml}
+            content: {get_param: ContainerImagePrepareFile}
           - path: /home/stack/vip-data-default.yaml
             permissions: '0644'
             content: {get_file: deploy-templates/vip-data-default.yaml}

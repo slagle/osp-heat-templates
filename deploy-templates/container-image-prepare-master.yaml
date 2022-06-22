@@ -1,0 +1,40 @@
+# Generated with the following on 2022-06-22T14:25:12.465185
+#
+#   openstack tripleo container image prepare default
+#
+
+parameter_defaults:
+  ContainerImagePrepare:
+  - set:
+      ceph_alertmanager_image: alertmanager
+      ceph_alertmanager_namespace: quay.io/prometheus
+      ceph_alertmanager_tag: v0.23.0
+      ceph_grafana_image: ceph-grafana
+      ceph_grafana_namespace: quay.io/ceph
+      ceph_grafana_tag: 6.7.4
+      ceph_haproxy_image: haproxy
+      ceph_haproxy_namespace: quay.io/ceph
+      ceph_haproxy_tag: 2.3
+      ceph_image: daemon
+      ceph_keepalived_image: keepalived
+      ceph_keepalived_namespace: quay.io/ceph
+      ceph_keepalived_tag: 2.1.5
+      ceph_namespace: quay.rdoproject.org/tripleomastercentos9
+      ceph_node_exporter_image: node-exporter
+      ceph_node_exporter_namespace: quay.io/prometheus
+      ceph_node_exporter_tag: v1.3.1
+      ceph_prometheus_image: prometheus
+      ceph_prometheus_namespace: quay.io/prometheus
+      ceph_prometheus_tag: v2.33.4
+      ceph_tag: current-ceph
+      name_prefix: openstack-
+      name_suffix: ''
+      namespace: quay.io/tripleomastercentos9
+      neutron_driver: ovn
+      pushgateway_image: pushgateway
+      pushgateway_namespace: quay.io/prometheus
+      pushgateway_tag: v1.4.2
+      rhel_containers: false
+      tag: current-tripleo
+    tag_from_label: rdo_version
+

@@ -3,6 +3,7 @@ parameter_defaults:
   OvercloudImage: RHEL-9.0.0-x86_64-development-latest
   ComputeFlavor: m1.small
   CloudUser: cloud-user
+  ContainerImagePrepareFile: deploy-templates/container-image-prepare-osp17.yaml
 
 resource_registry:
   OS::OSPHeatTemplates::RepoConfig: osp-repo-config.yaml
