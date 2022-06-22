@@ -10,7 +10,7 @@ resources:
       config: |
         #!/usr/bin/bash
         rpm -q git || sudo dnf -y install git
-        sudo dnf -y install python3 python3-setuptools python3-requests
+        sudo dnf -y install python3 python3-setuptools python3-requests python3-pip
         git clone https://git.openstack.org/openstack/tripleo-repos
         pushd tripleo-repos
         sudo python3 setup.py install
