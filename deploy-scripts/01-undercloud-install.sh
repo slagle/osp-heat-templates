@@ -6,6 +6,6 @@ exec 2>&1
 set -eux
 date
 
-time openstack undercloud install
+time openstack undercloud install $@
 
 date
