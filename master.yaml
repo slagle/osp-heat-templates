@@ -4,6 +4,7 @@ parameter_defaults:
   ComputeFlavor: ci.disk.medium
   CloudUser: centos
   ContainerImagePrepareFile: deploy-templates/container-image-prepare-master.yaml
+  EnvironmentName: master
 
 resource_registry:
   OS::OSPHeatTemplates::RepoConfig: tripleo-repo-config.yaml

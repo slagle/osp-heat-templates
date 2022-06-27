@@ -4,6 +4,7 @@ parameter_defaults:
   ComputeFlavor: m1.small
   CloudUser: cloud-user
   ContainerImagePrepareFile: deploy-templates/container-image-prepare-osp17.yaml
+  EnvironmentName: osp17
 
 resource_registry:
   OS::OSPHeatTemplates::RepoConfig: osp-repo-config.yaml

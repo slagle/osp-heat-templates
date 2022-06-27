@@ -48,6 +48,9 @@ parameters:
   ContainerImagePrepareFile:
     type: string
     default: deploy-templates/container-image-prepare-osp17.yaml
+  EnvironmentName:
+    type: string
+    default: osp17
 
 resources:
 
@@ -212,6 +215,13 @@ resources:
           params:
             STACK_NAME: {get_param: OS::stack_name}
 
+  ContainerImagePrepareFiles:
+    type: OS::Heat::Value
+    properties:
+      value:
+        osp17: {get_file: deploy-templates/container-image-prepare-osp17.yaml}
+        master: {get_file: deploy-templates/container-image-prepare-master.yaml}
+
   UndercloudConfig:
     type: OS::Heat::CloudConfig
     properties:
@@ -227,7 +237,7 @@ resources:
             content: {get_file: deploy-templates/undercloud-environment.yaml}
           - path: /home/stack/container-image-prepare.yaml
             permissions: '0644'
-            content: {get_file: {get_param: ContainerImagePrepareFile}}
+            content: {get_attr: [ContainerImagePrepareFiles, value, {get_param: EnvironmentName}]}
           - path: /home/stack/vip-data-default.yaml
             permissions: '0644'
             content: {get_file: deploy-templates/vip-data-default.yaml}
