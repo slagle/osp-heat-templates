@@ -51,6 +51,12 @@ parameters:
   EnvironmentName:
     type: string
     default: osp17
+  TripleOClientName:
+    type: string
+    default: python3-tripleoclient
+  PackageManagerName:
+    type: string
+    default: dnf
 
 resources:
 
@@ -205,97 +211,42 @@ resources:
         str_replace:
           template: |
             #!/usr/bin/bash
-            if rpm -q python3-tripleoclient; then
-              sudo dnf -y update python3-tripleoclient
+            if rpm -q TRIPLEOCLIENT_NAME; then
+              sudo PACKAGE_MANAGER_NAME -y update TRIPLEOCLIENT_NAME
             else
-              sudo dnf -y install python3-tripleoclient
+              sudo PACKAGE_MANAGER_NAME -y install TRIPLEOCLIENT_NAME
             fi
             # Needed so the undercloud install doesn't fail fqdn validation
             sudo hostnamectl set-hostname STACK_NAME.localdomain
           params:
             STACK_NAME: {get_param: OS::stack_name}
+            TRIPLEOCLIENT_NAME: {get_param: TripleOClientName}
+            PACKAGE_MANAGER_NAME: {get_param: PackageManagerName}
 
   ContainerImagePrepareFiles:
     type: OS::Heat::Value
     properties:
       value:
+        osp13: {get_file: deploy-templates/container-image-prepare-osp13.yaml}
         osp17: {get_file: deploy-templates/container-image-prepare-osp17.yaml}
         master: {get_file: deploy-templates/container-image-prepare-master.yaml}
 
   UndercloudConfig:
-    type: OS::Heat::CloudConfig
+    type: OS::OSPHeatTemplates::UndercloudConfig
     properties:
-      cloud_config:
-        write_files:
-          # We can't use owner:stack here b/c write_files runs before users
-          # See https://bugs.launchpad.net/cloud-init/+bug/1486113
-          - path: /home/stack/undercloud.conf
-            permissions: '0644'
-            content: {get_file: deploy-templates/undercloud.conf}
-          - path: /home/stack/undercloud-environment.yaml
-            permissions: '0644'
-            content: {get_file: deploy-templates/undercloud-environment.yaml}
-          - path: /home/stack/container-image-prepare.yaml
-            permissions: '0644'
-            content: {get_attr: [ContainerImagePrepareFiles, value, {get_param: EnvironmentName}]}
-          - path: /home/stack/vip-data-default.yaml
-            permissions: '0644'
-            content: {get_file: deploy-templates/vip-data-default.yaml}
-          - path: /home/stack/overcloud-environment.yaml
-            permissions: '0644'
-            content: {get_file: deploy-templates/overcloud-environment.yaml}
-          - path: /home/stack/network-config-update.yaml
-            permissions: '0644'
-            content: {get_file: deploy-templates/network-config-update.yaml}
-          - path: /home/stack/net_config_static_bridge.j2
-            permissions: '0644'
-            content: {get_file: deploy-templates/net_config_static_bridge.j2}
-          - path: /home/stack/net_config_multiple_nics.j2
-            permissions: '0644'
-            content: {get_file: deploy-templates/net_config_multiple_nics.j2}
-          - path: /home/stack/vip-data-network-isolation.yaml
-            permissions: '0644'
-            content: {get_file: deploy-templates/vip-data-network-isolation.yaml}
-          - path: /home/stack/default-network-isolation.yaml
-            permissions: '0644'
-            content: {get_file: deploy-templates/default-network-isolation.yaml}
-          - path: /home/stack/01-undercloud-install.sh
-            permissions: '0755'
-            content: {get_file: deploy-scripts/01-undercloud-install.sh}
-          - path: /home/stack/02-network-provision.sh
-            permissions: '0755'
-            content: {get_file: deploy-scripts/02-network-provision.sh}
-          - path: /home/stack/03-vip-provision.sh
-            permissions: '0755'
-            content: {get_file: deploy-scripts/03-vip-provision.sh}
-          - path: /home/stack/04-node-provision.sh
-            permissions: '0755'
-            content: {get_file: deploy-scripts/04-node-provision.sh}
-          - path: /home/stack/05-overcloud-deploy.sh
-            permissions: '0755'
-            content: {get_file: deploy-scripts/05-overcloud-deploy.sh}
-          - path: /home/stack/deploy.sh
-            permissions: '0755'
-            content: {get_file: deploy-scripts/deploy.sh}
-          - path: /home/stack/overcloud-baremetal-deploy.yaml
-            permissions: '0644'
-            content:
-              str_replace:
-                template: "value"
-                params:
-                  value: {get_attr: [BaremetalDeployInput, value]}
-          - path: /home/stack/.ssh/id_rsa
-            permissions: '0600'
-            content: {get_param: PrivateKeyContents}
-          - path: /home/stack/.ssh/id_rsa.pub
-            permissions: '0600'
-            content: {get_param: PublicKeyContents}
-          - path: /home/stack/.tmux.conf
-            permissions: '0644'
-            content: {get_file: deploy-files/tmux.conf}
-          - path: /root/cloud-init-timedatectl.avc
-            permissions: '0644'
-            content: {get_file: deploy-files/cloud-init-timedatectl.avc}
+      EnvironmentName: {get_param: EnvironmentName}
+      PublicKeyContents: {get_param: PublicKeyContents}
+      PrivateKeyContents: {get_param: PrivateKeyContents}
+      BaremetalDeployInput: {get_attr: [BaremetalDeployInput, value]}
+      DeployedServerPortMap: {get_attr: [DeployedServerPortMap, value]}
+      HostnameMap:
+        parameter_defaults:
+          HostnameMap:
+            map_merge:
+              list_concat:
+                - {get_attr: [Controllers, HostnameMap]}
+                - {get_attr: [Computes, HostnameMap]}
+      ContainerImagePrepareFiles: {get_attr: [ContainerImagePrepareFiles, value]}
 
   UndercloudUserData:
     type: OS::Heat::MultipartMime
@@ -339,6 +290,29 @@ resources:
             network_config:
               template: /home/stack/net_config_multiple_nics.j2
           instances: {get_attr: [Computes, BaremetalDeployInput]}
+
+  DeployedServerPortMap:
+    type: OS::Heat::Value
+    properties:
+      value:
+        resource_registry:
+          OS::TripleO::DeployedServer::ControlPlanePort: /usr/share/openstack-tripleo-heat-templates/deployed-server/deployed-neutron-port.yaml
+          OS::TripleO::Network::Ports::ControlPlaneVipPort: /usr/share/openstack-tripleo-heat-templates/deployed-server/deployed-neutron-port.yaml
+          OS::TripleO::Network::Ports::RedisVipPort: /usr/share/openstack-tripleo-heat-templates/network/ports/noop.yaml
+        parameter_defaults:
+          ControllerDeployedServerCount: {get_param: ControllerCount}
+          ComputeDeployedServerCount: {get_param: ComputeCount}
+          DeployedServerPortMap:
+            map_merge:
+              - control_virtual_ip:
+                  fixed_ips:
+                    - ip_address: 192.168.24.200
+                  subnets:
+                    - cidr: 24
+              - map_merge:
+                  list_concat:
+                    - get_attr: [Controllers, DeployedServerPortMap]
+                    - get_attr: [Computes, DeployedServerPortMap]
 
   ManagementPort:
     type: OS::Neutron::Port
@@ -420,6 +394,7 @@ resources:
           SubnetStart: 10
           ManagementNetwork: {get_resource: ManagementNetwork}
           DeployNetwork: {get_resource: DeployNetwork}
+          RoleLower: controller
 
   Computes:
     type: OS::Heat::ResourceGroup
@@ -445,6 +420,7 @@ resources:
           SubnetStart: 100
           ManagementNetwork: {get_resource: ManagementNetwork}
           DeployNetwork: {get_resource: DeployNetwork}
+          RoleLower: novacompute
 
 outputs:
   UndercloudFloatingIP:

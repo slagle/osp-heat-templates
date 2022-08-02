@@ -1,0 +1,14 @@
+parameter_defaults:
+  UndercloudImage: RHEL-7.9-x86_64-ga-latest
+  OvercloudImage: RHEL-7.9-x86_64-ga-latest
+  ComputeFlavor: m1.small
+  CloudUser: cloud-user
+  ContainerImagePrepareFile: deploy-templates/container-image-prepare-osp17.yaml
+  EnvironmentName: osp13
+  TripleOClientName: python-tripleoclient
+  OSPRelease: 13
+  PackageManagerName: yum
+
+resource_registry:
+  OS::OSPHeatTemplates::RepoConfig: osp-repo-config.yaml
+  OS::OSPHeatTemplates::UndercloudConfig: undercloud-config-13.yaml

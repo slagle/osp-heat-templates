@@ -1,0 +1,93 @@
+heat_template_version: rocky
+
+parameters:
+
+  EnvironmentName:
+    type: string
+    default: osp17
+
+  PrivateKeyContents:
+    type: string
+    description: |
+      SSH private key absolute file path used to connect to the created
+      servers.  The private key is needed so that the undercloud can SSH to the
+      overcloud nodes. Do not use a key that should be otherwise protected.
+
+  PublicKeyContents:
+    type: string
+    description: |
+      SSH public key contents used to connect to the created servers.
+
+  BaremetalDeployInput:
+    type: json
+    default: {}
+
+  DeployedServerPortMap:
+    type: json
+    default: {}
+
+  HostnameMap:
+    type: json
+    default: {}
+
+  ContainerImagePrepareFiles:
+    type: json
+    default: {}
+
+resources:
+
+  UndercloudConfig:
+    type: OS::Heat::CloudConfig
+    properties:
+      cloud_config:
+        write_files:
+          # We can't use owner:stack here b/c write_files runs before users
+          # See https://bugs.launchpad.net/cloud-init/+bug/1486113
+          - path: /home/stack/undercloud.conf
+            permissions: '0644'
+            content: {get_file: deploy-templates/undercloud-13.conf}
+          - path: /home/stack/overcloud-environment.yaml
+            permissions: '0644'
+            content: {get_file: deploy-templates/overcloud-environment-13.yaml}
+          - path: /home/stack/01-undercloud-install.sh
+            permissions: '0755'
+            content: {get_file: deploy-scripts/01-undercloud-install.sh}
+          - path: /home/stack/05-overcloud-deploy.sh
+            permissions: '0755'
+            content: {get_file: deploy-scripts/05-overcloud-deploy-13.sh}
+          - path: /home/stack/overcloud-images.yaml
+            permissions: '0644'
+            content: {get_param: [ContainerImagePrepareFiles, {get_param: EnvironmentName}]}
+          - path: /home/stack/deploy.sh
+            permissions: '0755'
+            content: {get_file: deploy-scripts/deploy-13.sh}
+          - path: /home/stack/deployed-server-port-map.yaml
+            permissions: '0644'
+            content:
+              str_replace:
+                template: "value"
+                params:
+                  value: {get_param: DeployedServerPortMap}
+          - path: /home/stack/hostname-map.yaml
+            permissions: '0644'
+            content:
+              str_replace:
+                template: "value"
+                params:
+                  value: {get_param: HostnameMap}
+          - path: /home/stack/.ssh/id_rsa
+            permissions: '0600'
+            content: {get_param: PrivateKeyContents}
+          - path: /home/stack/.ssh/id_rsa.pub
+            permissions: '0600'
+            content: {get_param: PublicKeyContents}
+          - path: /home/stack/.tmux.conf
+            permissions: '0644'
+            content: {get_file: deploy-files/tmux.conf}
+          - path: /root/cloud-init-timedatectl.avc
+            permissions: '0644'
+            content: {get_file: deploy-files/cloud-init-timedatectl.avc}
+
+outputs:
+  OS::stack_id:
+    value: {get_resource: UndercloudConfig}

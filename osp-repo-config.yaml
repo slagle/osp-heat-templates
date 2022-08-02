@@ -2,15 +2,28 @@ heat_template_version: 'rocky'
 
 parameters:
 
+  OSPRelease:
+    type: string
+    default: 17
+
+  PackageManagerName:
+    type: string
+    default: dnf
+
 resources:
 
   RHOSReleaseConfig:
     type: OS::Heat::SoftwareConfig
     properties:
-      config: |
-        #!/usr/bin/bash
-        dnf localinstall -y http://download.lab.bos.redhat.com/rcm-guest/puddles/OpenStack/rhos-release/rhos-release-latest.noarch.rpm
-        rhos-release 17
+      config:
+        str_replace:
+          template: |
+            #!/usr/bin/bash
+            PACKAGE_MANAGER_NAME localinstall -y http://download.lab.bos.redhat.com/rcm-guest/puddles/OpenStack/rhos-release/rhos-release-latest.noarch.rpm
+            rhos-release OSPRELEASE
+          params:
+            OSPRELEASE: {get_param: OSPRelease}
+            PACKAGE_MANAGER_NAME: {get_param: PackageManagerName}
 
 outputs:
   OS::stack_id:

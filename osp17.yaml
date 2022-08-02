@@ -8,3 +8,4 @@ parameter_defaults:
 
 resource_registry:
   OS::OSPHeatTemplates::RepoConfig: osp-repo-config.yaml
+  OS::OSPHeatTemplates::UndercloudConfig: undercloud-config.yaml

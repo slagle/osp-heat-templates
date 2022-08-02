@@ -5,6 +5,9 @@ parameters:
     description: Default cloud user created by cloud-init
     default: cloud-user
     type: string
+  PackageManagerName:
+    type: string
+    default: dnf
 
 resources:
 
@@ -30,15 +33,17 @@ resources:
         str_replace:
           template: |
             #!/usr/bin/bash
-            dnf -y install tmux
+            PACKAGE_MANAGER_NAME -y install tmux
             # Hmm..not sure how else to pull this off
             mkdir -p /home/stack/.ssh
             chmod 0700 /home/stack/.ssh
             /bin/cp /home/CLOUDUSER/.ssh/authorized_keys /home/stack/.ssh
             chmod 0600 /home/stack/.ssh/authorized_keys
+            cp /etc/skel/.bash* /home/stack/
             chown -R stack: /home/stack
           params:
             CLOUDUSER: {get_param: CloudUser}
+            PACKAGE_MANAGER_NAME: {get_param: PackageManagerName}
 
   SudoConfig:
     type: OS::Heat::SoftwareConfig

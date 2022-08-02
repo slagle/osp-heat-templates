@@ -17,6 +17,11 @@ parameters:
     type: string
   DeployNetwork:
     type: string
+  PackageManagerName:
+    type: string
+    default: dnf
+  RoleLower:
+    type: string
 
 resources:
 
@@ -149,9 +154,13 @@ resources:
   OvercloudOsNetConfigUserData:
     type: OS::Heat::SoftwareConfig
     properties:
-      config: |
-        #!/usr/bin/bash
-        sudo dnf -y install os-net-config openvswitch
+      config:
+        str_replace:
+          template: |
+            #!/usr/bin/bash
+            sudo PACKAGE_MANAGER_NAME -y install os-net-config openvswitch
+          params:
+            PACKAGE_MANAGER_NAME: {get_param: PackageManagerName}
 
   OvercloudUserData:
     type: OS::Heat::MultipartMime
@@ -161,6 +170,28 @@ resources:
           - {get_attr: [OvercloudServerUserData, ServerUserData]}
           - - config: {get_resource: OvercloudOsNetConfigUserData}
               subtype: x-shellscript
+
+  MappedName:
+    type: OS::Heat::Value
+    properties:
+      value:
+        list_join:
+          - '-'
+          - - overcloud
+            - {get_param: RoleLower}
+            - str_replace:
+                template: index
+                params:
+                  index: {get_param: index}
+
+  MappedIP:
+    type: OS::Heat::Value
+    properties:
+      value:
+        map_replace:
+          - ip_address: v
+          - values:
+              v: {get_attr: [CtlplaneIP, value]}
 
 outputs:
   OS::stack_id:
@@ -187,3 +218,27 @@ outputs:
           fixed_ip: {get_attr: [TenantIP, value]}
         - network: external
           fixed_ip: {get_attr: [ExternalIP, value]}
+  DeployedServerPortMap:
+    description: DeployedServerPortMap
+    value:
+      map_replace:
+        - k:
+            fixed_ips:
+              - {get_attr: [MappedIP, value]}
+            subnets:
+              - cidr: 24
+        - keys:
+            k:
+              list_join:
+                - '-'
+                - - {get_param: name}
+                  - ctlplane
+  HostnameMap:
+    description: HostnameMap
+    value:
+      map_replace:
+        - k: v
+        - keys:
+            k: {get_attr: [MappedName, value]}
+          values:
+            v: {get_param: name}

@@ -8,3 +8,4 @@ parameter_defaults:
 
 resource_registry:
   OS::OSPHeatTemplates::RepoConfig: tripleo-repo-config.yaml
+  OS::OSPHeatTemplates::UndercloudConfig: undercloud-config.yaml
