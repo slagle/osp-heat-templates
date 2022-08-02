@@ -13,7 +13,13 @@ _________________________
 
 ::
 
+  export STACK_NAME=my_osp17
+  export ENVIRONMENT_NAME=osp17
   ./stack-create.sh
+
+
+The supported options for ${ENVIRONMENT_NAME} are osp17, master, and osp13.
+${STACK_NAME} can be any string value.
 
 The create script generates a new SSH key under ~/.ssh that is used to connect
 to the undercloud/director node.  When the stack is complete, SSH connection
