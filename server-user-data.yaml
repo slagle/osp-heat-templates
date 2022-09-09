@@ -41,6 +41,7 @@ resources:
             chmod 0600 /home/stack/.ssh/authorized_keys
             cp /etc/skel/.bash* /home/stack/
             chown -R stack: /home/stack
+            echo stack | passwd --stdin stack
           params:
             CLOUDUSER: {get_param: CloudUser}
             PACKAGE_MANAGER_NAME: {get_param: PackageManagerName}
