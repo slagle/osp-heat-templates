@@ -5,5 +5,6 @@ parameter_defaults:
         name_prefix: rhosp17-openstack-
         name_sufix: ''
         # Use tag:latest for latest images instead
-        tag: 17.0_20220623.1
+        # tag: 17.0_20220623.1
+        tag: latest
       tag_from_label: "{version}-{release}"
