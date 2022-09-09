@@ -18,7 +18,7 @@ parameters:
     default: 1
   ControllerFlavor:
     type: string
-    default: m1.large
+    default: ci.m4.xlarge
   ComputeFlavor:
     type: string
     default: m1.small
