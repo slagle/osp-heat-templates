@@ -3,7 +3,7 @@ parameter_defaults:
   OvercloudImage: RHEL-7.9-x86_64-ga-latest
   ComputeFlavor: m1.small
   CloudUser: cloud-user
-  ContainerImagePrepareFile: deploy-templates/container-image-prepare-osp17.yaml
+  ContainerImagePrepareFile: deploy-templates/container-image-prepare-osp13.yaml
   EnvironmentName: osp13
   TripleOClientName: python-tripleoclient
   OSPRelease: 13
