@@ -26,4 +26,4 @@ openstack stack create ${STACK_NAME} -t ${SCRIPT_DIR}/tripleo.yaml --wait \
 
 IP=$(openstack stack output show ${STACK_NAME} UndercloudFloatingIP -c output_value -f value)
 ssh-keygen -R $IP
-IP=${IP} ${SCRIPT_DIR}/stack-outputs.sh
+SSH_KEYGEN=1 IP=${IP} ${SCRIPT_DIR}/stack-outputs.sh
