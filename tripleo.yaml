@@ -198,6 +198,7 @@ resources:
         - port: {get_resource: ManagementPort}
         - port: {get_resource: DeployPort}
         - port: {get_resource: ExternalPort}
+        - port: {get_resource: InternalApiPort}
       user_data: {get_resource: UndercloudUserData}
       user_data_format: RAW
 
@@ -337,6 +338,14 @@ resources:
       fixed_ips:
         - ip_address: 10.0.0.5
           subnet: {get_resource: DeployExternalSubnet}
+
+  InternalApiPort:
+    type: OS::Neutron::Port
+    properties:
+      network: {get_resource: DeployNetwork}
+      fixed_ips:
+        - ip_address: 172.16.2.180
+          subnet: {get_resource: DeployInternalApiSubnet}
 
   # Not actually associated with the Undercloud server, resource is just here to
   # reserve the IP so the undercloud install can use it.
