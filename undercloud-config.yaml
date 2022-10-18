@@ -88,6 +88,9 @@ resources:
           - path: /home/stack/05-overcloud-deploy.sh
             permissions: '0755'
             content: {get_file: deploy-scripts/05-overcloud-deploy.sh}
+          - path: /home/stack/06-external-compute.sh
+            permissions: '0755'
+            content: {get_file: deploy-scripts/06-external-compute.sh}
           - path: /home/stack/deploy.sh
             permissions: '0755'
             content: {get_file: deploy-scripts/deploy.sh}

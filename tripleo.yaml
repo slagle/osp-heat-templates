@@ -16,6 +16,9 @@ parameters:
   ComputeCount:
     type: number
     default: 1
+  ExternalComputeCount:
+    type: number
+    default: 0
   ControllerFlavor:
     type: string
     default: ci.m4.xlarge
@@ -430,6 +433,32 @@ resources:
           ManagementNetwork: {get_resource: ManagementNetwork}
           DeployNetwork: {get_resource: DeployNetwork}
           RoleLower: novacompute
+
+  ExternalComputes:
+    type: OS::Heat::ResourceGroup
+    depends_on:
+      - DeploySubnet
+      - ManagementSubnet
+    properties:
+      count: {get_param: ExternalComputeCount}
+      resource_def:
+        type: overcloud-server.yaml
+        properties:
+          flavor: {get_param: ComputeFlavor}
+          key_name: {get_resource: KeyPair}
+          name:
+            list_join:
+              - '-'
+              - - {get_param: OS::stack_name}
+                - 'external-compute'
+                - '%index%'
+          image: {get_param: OvercloudImage}
+          index: |
+            %index%
+          SubnetStart: 160
+          ManagementNetwork: {get_resource: ManagementNetwork}
+          DeployNetwork: {get_resource: DeployNetwork}
+          RoleLower: external-novacompute
 
 outputs:
   UndercloudFloatingIP:
