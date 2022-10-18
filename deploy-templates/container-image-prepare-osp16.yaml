@@ -1,0 +1,18 @@
+# Generated with the following on 2022-10-18T15:04:37.521393
+#
+#   openstack tripleo container image prepare -e default-16.yaml --output-env-file out2.yaml -r /usr/share/openstack-tripleo-heat-templates/roles/Undercloud.yaml
+#
+
+parameter_defaults:
+
+  ContainerImagePrepare:
+  - push_destination: false
+    set:
+      ceph_image: rhceph-4.0-rhel8
+      ceph_namespace: docker-registry.upshift.redhat.com/ceph
+      ceph_tag: latest
+      name_suffix: ''
+      namespace: registry-proxy.engineering.redhat.com/rh-osbs
+      name_prefix: rhosp16-openstack-
+      neutron_driver: ovn
+      tag: latest

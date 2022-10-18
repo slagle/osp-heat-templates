@@ -232,6 +232,7 @@ resources:
     properties:
       value:
         osp13: {get_file: deploy-templates/container-image-prepare-osp13.yaml}
+        osp16: {get_file: deploy-templates/container-image-prepare-osp16.yaml}
         osp17: {get_file: deploy-templates/container-image-prepare-osp17.yaml}
         master: {get_file: deploy-templates/container-image-prepare-master.yaml}
 

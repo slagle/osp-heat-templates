@@ -1,0 +1,14 @@
+parameter_defaults:
+  UndercloudImage: RHEL-8.4.0-x86_64-ga-latest
+  OvercloudImage: RHEL-8.4.0-x86_64-ga-latest
+  ComputeFlavor: m1.small
+  CloudUser: cloud-user
+  ContainerImagePrepareFile: deploy-templates/container-image-prepare-osp16.yaml
+  EnvironmentName: osp16
+  TripleOClientName: python3-tripleoclient
+  OSPRelease: 16.2
+  PackageManagerName: dnf
+
+resource_registry:
+  OS::OSPHeatTemplates::RepoConfig: osp-repo-config.yaml
+  OS::OSPHeatTemplates::UndercloudConfig: undercloud-config-16.yaml
