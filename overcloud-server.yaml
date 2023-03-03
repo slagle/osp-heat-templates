@@ -226,7 +226,7 @@ outputs:
             fixed_ips:
               - {get_attr: [MappedIP, value]}
             subnets:
-              - cidr: 24
+              - cidr: 192.168.24.0/24
         - keys:
             k:
               list_join:

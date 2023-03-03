@@ -304,6 +304,7 @@ resources:
           OS::TripleO::DeployedServer::ControlPlanePort: /usr/share/openstack-tripleo-heat-templates/deployed-server/deployed-neutron-port.yaml
           OS::TripleO::Network::Ports::ControlPlaneVipPort: /usr/share/openstack-tripleo-heat-templates/deployed-server/deployed-neutron-port.yaml
           OS::TripleO::Network::Ports::RedisVipPort: /usr/share/openstack-tripleo-heat-templates/network/ports/noop.yaml
+          OS::TripleO::Network::Ports::OVNDBsVipPort: /usr/share/openstack-tripleo-heat-templates/network/ports/noop.yaml
         parameter_defaults:
           ControllerDeployedServerCount: {get_param: ControllerCount}
           ComputeDeployedServerCount: {get_param: ComputeCount}
@@ -313,7 +314,7 @@ resources:
                   fixed_ips:
                     - ip_address: 192.168.24.200
                   subnets:
-                    - cidr: 24
+                    - cidr: 192.168.24.0/24
               - map_merge:
                   list_concat:
                     - get_attr: [Controllers, DeployedServerPortMap]
