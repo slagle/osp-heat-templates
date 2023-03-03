@@ -5,6 +5,7 @@ parameter_defaults:
   CloudUser: cloud-user
   ContainerImagePrepareFile: deploy-templates/container-image-prepare-osp17.yaml
   EnvironmentName: osp17
+  Puddle: latest-RHOS-17.0-RHEL-9
 
 resource_registry:
   OS::OSPHeatTemplates::RepoConfig: osp-repo-config.yaml

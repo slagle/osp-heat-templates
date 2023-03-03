@@ -6,6 +6,10 @@ parameters:
     type: string
     default: 17
 
+  Puddle:
+    type: string
+    default: latest-RHOS-16.2-RHEL-8
+
   PackageManagerName:
     type: string
     default: dnf
@@ -20,10 +24,11 @@ resources:
           template: |
             #!/usr/bin/bash
             PACKAGE_MANAGER_NAME localinstall -y http://download.lab.bos.redhat.com/rcm-guest/puddles/OpenStack/rhos-release/rhos-release-latest.noarch.rpm
-            rhos-release OSPRELEASE
+            rhos-release OSPRELEASE -p PUDDLE
           params:
             OSPRELEASE: {get_param: OSPRelease}
             PACKAGE_MANAGER_NAME: {get_param: PackageManagerName}
+            PUDDLE: {get_param: Puddle}
 
 outputs:
   OS::stack_id:
