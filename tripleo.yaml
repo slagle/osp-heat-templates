@@ -3,10 +3,10 @@ heat_template_version: rocky
 parameters:
   OvercloudImage:
     type: string
-    default: RHEL-8.4.0-x86_64-latest
+    default: Fedora-Cloud-Base-37-latest
   UndercloudImage:
     type: string
-    default: RHEL-8.4.0-x86_64-latest
+    default: Fedora-Cloud-Base-37-latest
   UndercloudUsername:
     type: string
     default: stack
@@ -21,19 +21,19 @@ parameters:
     default: 0
   ControllerFlavor:
     type: string
-    default: ci.m4.xlarge
+    default: ci.standard.medium
   ComputeFlavor:
     type: string
     default: m1.small
   UndercloudFlavor:
     type: string
-    default: m1.xlarge
+    default: ci.standard.medium
   KeyName:
     type: string
-    default: jslagle
+    default: adrbrown
   FloatingNetwork:
     type: string
-    default: provider_net_sysops
+    default: shared_net_5
   PrivateKeyContents:
     type: string
     description: |

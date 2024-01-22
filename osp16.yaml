@@ -1,7 +1,7 @@
 parameter_defaults:
-  UndercloudImage: RHEL-8.4.0-x86_64-ga-latest
-  OvercloudImage: RHEL-8.4.0-x86_64-ga-latest
-  ComputeFlavor: m1.small
+  UndercloudImage: Fedora-Cloud-Base-37-latest
+  OvercloudImage: Fedora-Cloud-Base-37-latest
+  ComputeFlavor: ci.standard.medium
   CloudUser: cloud-user
   ContainerImagePrepareFile: deploy-templates/container-image-prepare-osp16.yaml
   EnvironmentName: osp16
