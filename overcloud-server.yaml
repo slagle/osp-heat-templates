@@ -55,7 +55,7 @@ resources:
     properties:
       value:
         str_replace:
-          template: 10.98.0.<%ip%>
+          template: 10.98.17.<%ip%>
           params:
             <%ip%>:
               yaql:
@@ -69,7 +69,7 @@ resources:
     properties:
       value:
         str_replace:
-          template: 192.168.24.<%ip%>
+          template: 192.178.24.<%ip%>
           params:
             <%ip%>:
               yaql:
@@ -83,7 +83,7 @@ resources:
     properties:
       value:
         str_replace:
-          template: 172.16.1.<%ip%>
+          template: 172.17.1.<%ip%>
           params:
             <%ip%>:
               yaql:
@@ -97,7 +97,7 @@ resources:
     properties:
       value:
         str_replace:
-          template: 172.16.3.<%ip%>
+          template: 172.17.3.<%ip%>
           params:
             <%ip%>:
               yaql:
@@ -111,7 +111,7 @@ resources:
     properties:
       value:
         str_replace:
-          template: 172.16.2.<%ip%>
+          template: 172.17.2.<%ip%>
           params:
             <%ip%>:
               yaql:
@@ -125,7 +125,7 @@ resources:
     properties:
       value:
         str_replace:
-          template: 172.16.0.<%ip%>
+          template: 172.17.0.<%ip%>
           params:
             <%ip%>:
               yaql:
@@ -139,7 +139,7 @@ resources:
     properties:
       value:
         str_replace:
-          template: 10.0.0.<%ip%>
+          template: 10.1.0.<%ip%>
           params:
             <%ip%>:
               yaql:
@@ -226,7 +226,7 @@ outputs:
             fixed_ips:
               - {get_attr: [MappedIP, value]}
             subnets:
-              - cidr: 192.168.24.0/24
+              - cidr: 192.178.24.0/24
         - keys:
             k:
               list_join:

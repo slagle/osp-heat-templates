@@ -1,7 +1,7 @@
 parameter_defaults:
   UndercloudImage: RHEL-9.2.0-x86_64-development-latest
   OvercloudImage: RHEL-9.2.0-x86_64-development-latest
-  ComputeFlavor: m1.small
+  ComputeFlavor: ci.standard.medium
   CloudUser: cloud-user
   ContainerImagePrepareFile: deploy-templates/container-image-prepare-osp17.yaml
   EnvironmentName: osp17.1
