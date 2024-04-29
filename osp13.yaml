@@ -1,7 +1,7 @@
 parameter_defaults:
   UndercloudImage: RHEL-7.9-x86_64-ga-latest
   OvercloudImage: RHEL-7.9-x86_64-ga-latest
-  ComputeFlavor: m1.small
+  ComputeFlavor: m1.xlarge
   CloudUser: cloud-user
   ContainerImagePrepareFile: deploy-templates/container-image-prepare-osp13.yaml
   EnvironmentName: osp13

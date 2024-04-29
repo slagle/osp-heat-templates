@@ -1,4 +1,4 @@
-heat_template_version: rocky
+heat_template_version: "rocky"
 
 parameters:
 
@@ -49,18 +49,55 @@ resources:
           - path: /home/stack/overcloud-environment.yaml
             permissions: '0644'
             content: {get_file: deploy-templates/overcloud-environment-13.yaml}
+          - path: /home/stack/undercloud-environment.yaml
+            permissions: '0644'
+            content: {get_file: deploy-templates/undercloud-environment.yaml}
+          - path: /home/stack/vip-data-default.yaml
+            permissions: '0644'
+            content: {get_file: deploy-templates/vip-data-default.yaml}
+          - path: /home/stack/network-config-update.yaml
+            permissions: '0644'
+            content: {get_file: deploy-templates/network-config-update.yaml}
+          - path: /home/stack/net_config_static_bridge.j2
+            permissions: '0644'
+            content: {get_file: deploy-templates/net_config_static_bridge.j2}
+          - path: /home/stack/vip-data-network-isolation.yaml
+            permissions: '0644'
+            content: {get_file: deploy-templates/vip-data-network-isolation.yaml}
+          - path: /home/stack/default-network-isolation.yaml
+            permissions: '0644'
+            content: {get_file: deploy-templates/default-network-isolation.yaml}
           - path: /home/stack/01-undercloud-install.sh
             permissions: '0755'
             content: {get_file: deploy-scripts/01-undercloud-install.sh}
+          - path: /home/stack/02-network-provision.sh
+            permissions: '0755'
+            content: {get_file: deploy-scripts/02-network-provision.sh}
+          - path: /home/stack/03-vip-provision.sh
+            permissions: '0755'
+            content: {get_file: deploy-scripts/03-vip-provision.sh}
+          - path: /home/stack/04-node-provision.sh
+            permissions: '0755'
+            content: {get_file: deploy-scripts/04-node-provision.sh}
           - path: /home/stack/05-overcloud-deploy.sh
             permissions: '0755'
             content: {get_file: deploy-scripts/05-overcloud-deploy-13.sh}
+          - path: /home/stack/06-external-compute.sh
+            permissions: '0755'
+            content: {get_file: deploy-scripts/06-external-compute.sh}
           - path: /home/stack/overcloud-images.yaml
             permissions: '0644'
             content: {get_param: [ContainerImagePrepareFiles, {get_param: EnvironmentName}]}
           - path: /home/stack/deploy.sh
             permissions: '0755'
             content: {get_file: deploy-scripts/deploy-13.sh}
+          - path: /home/stack/overcloud-baremetal-deploy.yaml
+            permissions: '0644'
+            content:
+              str_replace:
+                template: "value"
+                params:
+                  value: {get_param: BaremetalDeployInput}
           - path: /home/stack/deployed-server-port-map.yaml
             permissions: '0644'
             content:
