@@ -23,7 +23,7 @@ resources:
         str_replace:
           template: |
             #!/usr/bin/bash
-            PACKAGE_MANAGER_NAME localinstall -y http://download.lab.bos.redhat.com/rcm-guest/puddles/OpenStack/rhos-release/rhos-release-latest.noarch.rpm
+            PACKAGE_MANAGER_NAME localinstall -y http://download.eng.bos.redhat.com/rcm-guest/puddles/OpenStack/rhos-release/rhos-release-latest.noarch.rpm
             rhos-release OSPRELEASE -p PUDDLE
           params:
             OSPRELEASE: {get_param: OSPRelease}
