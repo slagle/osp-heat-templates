@@ -227,6 +227,9 @@ outputs:
               - {get_attr: [MappedIP, value]}
             subnets:
               - cidr: 192.168.24.0/24
+            network:
+              tags:
+                - 192.168.24.0/24
         - keys:
             k:
               list_join:

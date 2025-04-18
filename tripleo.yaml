@@ -316,6 +316,9 @@ resources:
                     - ip_address: 192.168.24.200
                   subnets:
                     - cidr: 192.168.24.0/24
+                  network:
+                    tags:
+                      - 192.168.24.0/24
               - map_merge:
                   list_concat:
                     - get_attr: [Controllers, DeployedServerPortMap]
